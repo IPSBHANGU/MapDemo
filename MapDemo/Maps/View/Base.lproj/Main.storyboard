@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="Map view configurations" minToolsVersion="14.0"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Map View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="MapViewController" customModule="MapDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="464-Wu-XPy">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <standardMapConfiguration key="preferredConfiguration"/>
+                            </mapView>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="From" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="srw-Fp-URO">
+                                <rect key="frame" x="23" y="76" width="347" height="40"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="XGL-Qx-8bu"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yvs-ug-Gip">
+                                <rect key="frame" x="324" y="79" width="46" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="oB3-e6-ZOx"/>
+                                    <constraint firstAttribute="width" constant="46" id="q6P-iO-L6c"/>
+                                </constraints>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="magnifyingglass" catalog="system"/>
+                                <connections>
+                                    <action selector="searchButtonAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lqD-t6-pvY"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eSz-f9-ynh">
+                                <rect key="frame" x="320" y="682" width="50" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="JiH-uP-rje"/>
+                                    <constraint firstAttribute="width" constant="50" id="rNn-OH-S6Q"/>
+                                </constraints>
+                                <color key="tintColor" name="AccentColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="location.fill" catalog="system"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="25"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="currentLocationAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="UoG-Kc-1QS"/>
+                                </connections>
+                            </button>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="YDE-HR-UgM">
+                                <rect key="frame" x="100" y="787" width="193" height="32"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <segments>
+                                    <segment title="Standard"/>
+                                    <segment title="Satellite"/>
+                                </segments>
+                            </segmentedControl>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c07-Kh-DqX">
+                                <rect key="frame" x="23" y="787" width="49" height="31"/>
+                                <color key="onTintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <action selector="switchButtonAction:" destination="BYZ-38-t0r" eventType="valueChanged" id="HG8-Sd-HEb"/>
+                                </connections>
+                            </switch>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="To" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nxT-Xc-yti">
+                                <rect key="frame" x="23" y="133" width="347" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="W8l-0v-SM4"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GEv-9Z-gNu">
+                                <rect key="frame" x="171.66666666666666" y="194" width="50" height="50"/>
+                                <color key="backgroundColor" systemColor="systemGreenColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="8nA-Ff-dT7"/>
+                                    <constraint firstAttribute="width" constant="50" id="JXc-Ex-cil"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <color key="tintColor" red="0.94117647059999998" green="0.98039215690000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Go"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="25"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="goButtonAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Y5N-xp-i5g"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="464-Wu-XPy" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="4HR-Pj-E15"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="srw-Fp-URO" secondAttribute="trailing" constant="23" id="5tF-TQ-GkU"/>
+                            <constraint firstItem="YDE-HR-UgM" firstAttribute="leading" secondItem="c07-Kh-DqX" secondAttribute="trailing" constant="30" id="6rp-1v-RpO"/>
+                            <constraint firstAttribute="bottom" secondItem="eSz-f9-ynh" secondAttribute="bottom" constant="120" id="G50-8a-slS"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Yvs-ug-Gip" secondAttribute="trailing" constant="23" id="KFy-lj-lzr"/>
+                            <constraint firstItem="GEv-9Z-gNu" firstAttribute="top" secondItem="nxT-Xc-yti" secondAttribute="bottom" constant="21" id="M71-Id-r1Y"/>
+                            <constraint firstItem="464-Wu-XPy" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Mjv-th-ad0"/>
+                            <constraint firstItem="c07-Kh-DqX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="23" id="OWh-wl-qTv"/>
+                            <constraint firstItem="srw-Fp-URO" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="17" id="Ohd-JR-Yk6"/>
+                            <constraint firstItem="GEv-9Z-gNu" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SAS-ZU-Qan"/>
+                            <constraint firstItem="c07-Kh-DqX" firstAttribute="bottom" secondItem="YDE-HR-UgM" secondAttribute="bottom" id="TQq-YT-swb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="464-Wu-XPy" secondAttribute="trailing" id="TZb-TI-6lV"/>
+                            <constraint firstItem="YDE-HR-UgM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="100" id="YJo-M9-8Rf"/>
+                            <constraint firstItem="Yvs-ug-Gip" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="Z7Z-23-Bt4"/>
+                            <constraint firstItem="srw-Fp-URO" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="17" id="cRM-m8-T4G"/>
+                            <constraint firstAttribute="bottom" secondItem="464-Wu-XPy" secondAttribute="bottom" id="ciq-Lg-zVK"/>
+                            <constraint firstItem="YDE-HR-UgM" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" constant="-34" id="edj-4T-88L"/>
+                            <constraint firstItem="YDE-HR-UgM" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nnE-Km-jRp"/>
+                            <constraint firstItem="nxT-Xc-yti" firstAttribute="top" secondItem="srw-Fp-URO" secondAttribute="bottom" constant="17" id="u4a-Up-ipq"/>
+                            <constraint firstItem="eSz-f9-ynh" firstAttribute="trailing" secondItem="Yvs-ug-Gip" secondAttribute="trailing" id="v5C-p5-QRU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="YDE-HR-UgM" secondAttribute="trailing" constant="100" id="vjD-9m-Heb"/>
+                            <constraint firstItem="srw-Fp-URO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="23" id="w7v-7g-OUe"/>
+                            <constraint firstItem="nxT-Xc-yti" firstAttribute="trailing" secondItem="srw-Fp-URO" secondAttribute="trailing" id="wNI-su-BwK"/>
+                            <constraint firstItem="nxT-Xc-yti" firstAttribute="leading" secondItem="srw-Fp-URO" secondAttribute="leading" id="xRV-L4-4Gx"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="addressTextField" destination="srw-Fp-URO" id="GEY-wH-2k7"/>
+                        <outlet property="goButton" destination="GEv-9Z-gNu" id="UDe-rw-5iq"/>
+                        <outlet property="locateButton" destination="eSz-f9-ynh" id="2ik-FT-ng5"/>
+                        <outlet property="mapView" destination="464-Wu-XPy" id="tVM-kd-Uhg"/>
+                        <outlet property="searchButton" destination="Yvs-ug-Gip" id="PaR-Ff-GIF"/>
+                        <outlet property="segmentController" destination="YDE-HR-UgM" id="T3J-eC-lXC"/>
+                        <outlet property="switchButton" destination="c07-Kh-DqX" id="AOb-k3-rlq"/>
+                        <outlet property="toTextField" destination="nxT-Xc-yti" id="oLI-aH-YVg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="135.1145038167939" y="3.5211267605633805"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="location.fill" catalog="system" width="128" height="119"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="117"/>
+        <namedColor name="AccentColor">
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

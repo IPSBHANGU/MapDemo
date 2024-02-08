@@ -12,6 +12,7 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var switchButton: UISwitch!
     
+    @IBOutlet weak var cutButton: UIButton!
     @IBOutlet weak var goButton: UIButton!
     @IBOutlet weak var toTextField: UITextField!
     @IBOutlet weak var segmentController: UISegmentedControl!
@@ -22,13 +23,18 @@ class MapViewController: UIViewController {
     
     let locationManager = CLLocationManager()
     
+    var fromLocationCoordinate: CLLocationCoordinate2D?
+    var toLocationCoordinate: CLLocationCoordinate2D?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setLocationManager()
         textFields()
+        cutButton.isHidden = true
+        goButton.layer.borderWidth = 1
         mapView.delegate = self
         mapView.mapType = .standard
-        switchButton.isOn = true
+        switchButton.isOn = false
         segmentController.addTarget(self, action: #selector(segmentValueChanged(sender: )), for: .valueChanged)
         
     }
@@ -55,37 +61,32 @@ class MapViewController: UIViewController {
         }
     }
     
-    @objc func setColour(){
-        if switchButton.isOn{
-            mapView.backgroundColor = .black
-        } else {
-            mapView.backgroundColor = .white
-        }
-    }
-    
     func setLocationManager(){
         locationManager.activityType = .automotiveNavigation
         locationManager.distanceFilter = 20
         locationManager.desiredAccuracy = 100
+        mapView.showsUserLocation = true
         locationManager.delegate = self
+        locationManager.startUpdatingLocation()
         locationManager.requestWhenInUseAuthorization()
     }
     
     func setAnnotation(location:CLLocation , title : String){
+        
         let annotation = MKPointAnnotation()
         annotation.title = title
         annotation.coordinate = location.coordinate
         
-        self.mapView.removeAnnotations(self.mapView.annotations)
         self.mapView.addAnnotation(annotation)
         
         let view = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 200, longitudinalMeters: 200)
         self.mapView.setRegion(view, animated: true)
     }
     
-    func getLocation(address:String){
+    func getLocation(address:String , isFormAddress : Bool){
         let geoCoder = CLGeocoder()
-        geoCoder.geocodeAddressString(address) { placemarks, error in
+        geoCoder.geocodeAddressString(address) { [weak self] placemarks, error in
+            guard let self = self else { return }
             if let error = error {
                 print("Geocode failed with error: \(error.localizedDescription)")
                 return
@@ -99,8 +100,19 @@ class MapViewController: UIViewController {
             
             print("Location found: \(location.coordinate.latitude), \(location.coordinate.longitude)")
             
-            self.setAnnotation(location: location , title: "Title")
+            if isFormAddress {
+                self.fromLocationCoordinate = location.coordinate
+            } else {
+                self.toLocationCoordinate = location.coordinate
+            }
             
+            if let fromCoordinate = self.fromLocationCoordinate,
+               let toCoordinate = self.toLocationCoordinate {
+                self.drawRoute(from: fromCoordinate, to: toCoordinate)
+                self.setAnnotation(location: CLLocation(latitude: fromCoordinate.latitude, longitude: fromCoordinate.longitude), title: addressTextField.text ?? "")
+            
+                self.setAnnotation(location: CLLocation(latitude: toCoordinate.latitude, longitude: toCoordinate.longitude), title: toTextField.text ?? "")
+            }
         }
     }
     
@@ -120,13 +132,13 @@ class MapViewController: UIViewController {
             searchButton.isSelected = false
             setAnnotation(location: location , title: "Current Location")
             getAddress(location: location)
-            
+
         }
     }
     
     @IBAction func searchButtonAction(_ sender: Any) {
         if let address = addressTextField.text {
-            getLocation(address: address)
+            getLocation(address: address , isFormAddress: true)
         }
         addressTextField.resignFirstResponder()
         searchButton.isSelected = true
@@ -134,25 +146,46 @@ class MapViewController: UIViewController {
     
     @IBAction func switchButtonAction(_ sender: Any) {
         if switchButton.isOn{
-            self.overrideUserInterfaceStyle = .light
-        } else {
             self.overrideUserInterfaceStyle = .dark
+        } else {
+            self.overrideUserInterfaceStyle = .light
         }
-        
     }
     
     @IBAction func goButtonAction(_ sender: Any) {
+        
         if let fromAddress = addressTextField.text{
-            getLocation(address: fromAddress)
+            print("From cooordinates")
+            getLocation(address: fromAddress , isFormAddress: true)
+            addressTextField.isHidden = true
             
         }
         
-        if  let toAddress = toTextField.text  {
-            self.getLocation(address: toAddress)
+        if let toAddress = toTextField.text  {
+            print("to coordinates")
+            self.getLocation(address: toAddress , isFormAddress: false)
+            toTextField.isHidden = true
         }
         
+        switchButton.isHidden = true
+        locateButton.isHidden = true
+        cutButton.isHidden = false
+        goButton.isHidden = true
+        
     }
+    
+    @IBAction func cutButtonAction(_ sender: Any) {
+        switchButton.isHidden = false
+        locateButton.isHidden = false
+        goButton.isHidden = false
+        addressTextField.isHidden = false
+        toTextField.isHidden = false
+        cutButton.isHidden = true
+        resetMap()
+    }
+    
 }
+
 extension MapViewController : UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -162,46 +195,87 @@ extension MapViewController : UITextFieldDelegate{
 extension MapViewController : CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        _ = locations.first
+        guard let location = locations.first else { return }
         
+        let coordinates = locations.map { $0.coordinate }
+        let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
+        
+        mapView.addOverlay(polyline)
     }
-    
 }
+
 extension MapViewController : MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let polyline = overlay as? MKPolyline else {
-            return MKOverlayRenderer(overlay: overlay)
+        if let polyline = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: polyline)
+            renderer.strokeColor = .systemBlue
+            renderer.lineWidth = 3
+            return renderer
+
         }
-        
-        let renderer = MKPolylineRenderer(polyline: polyline)
-        renderer.strokeColor = .blue
-        renderer.lineWidth = 3
-        return renderer
+        return MKOverlayRenderer(overlay: overlay)
     }
     
-//    func drawRoute(from startCoordinate: CLLocationCoordinate2D, to endCoordinate: CLLocationCoordinate2D) {
-//        let request = MKDirections.Request()
-//        request.source = MKMapItem(placemark: MKPlacemark(coordinate: startCoordinate))
-//        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: endCoordinate))
-//        request.transportType = .automobile
-//        
-//        let directions = MKDirections(request: request)
-//        directions.calculate { [weak self] response, error in
-//            guard let self = self else { return }
-//            guard let route = response?.routes.first else {
-//                // Handle error or show alert if route not found
-//                return
-//            }
-//            
-//            // Remove existing overlays (if any)
-//            self.mapView.removeOverlays(self.mapView.overlays)
-//            
-//            // Add route to map
-//            self.mapView.addOverlay(route.polyline)
-//            
-//            // Optionally, zoom to fit the route
-//            self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
-//        }
-//    }
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "annotation")
+        annotationView.markerTintColor = .systemBlue
+        return annotationView
+    }
+
+    func drawRoute(from startCoordinate: CLLocationCoordinate2D, to endCoordinate: CLLocationCoordinate2D) {
+        let request = MKDirections.Request()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: startCoordinate))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: endCoordinate))
+        request.transportType = .any
+        
+        let directions = MKDirections(request: request)
+        directions.calculate(completionHandler: { response , error  in
+            guard let route = response?.routes.first else {
+                return
+            }
+            self.mapView.removeOverlays(self.mapView.overlays)  // Remove existing overlays
+            
+            self.mapView.addOverlay(route.polyline)
+        })
+    }
+    
+    func resetMap(){
+        mapView.removeAnnotations(mapView.annotations)
+        mapView.removeOverlays(mapView.overlays)
+        mapView.mapType = .standard
+        addressTextField.text = ""
+        toTextField.text = ""
+    }
+    
 }
+//    func drawRouteBetweenAnnotations() {
+//        guard let annotations = mapView.annotations as? [MKPointAnnotation],
+//                annotations.count >= 2 else {
+//            print("At least two annotations are required to draw a route")
+//            return
+//        }
+//        
+//        let coordinates = annotations.map { $0.coordinate } //Creates an array coordinates by extracting the coordinate property from each annotation.
+//        
+//        // Remove any existing overlays
+//        mapView.removeOverlays(mapView.overlays)
+//        
+//        // Iterate through coordinates and draw route between them
+////        for i in 0..<coordinates.count - 1 {
+////            print("i = " , i)
+////            let polyline = MKPolyline(coordinates: [coordinates[i] , coordinates[i+1]], count: 2)
+////            mapView.addOverlay(polyline)
+////        }
+//        
+//        let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
+//        mapView.addOverlay(polyline)
+//        
+////        var i = 0
+////        for var i in i..<coordinates.count - 1{
+////            let polyline = MKPolyline(coordinates: coordinates, count: 2)
+////            mapView.addOverlay(polyline)
+////            i = i+1
+////        }
+//    }
+//}
 

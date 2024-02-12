@@ -37,6 +37,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FB5D72F72B79FD0F00BD1A69 /* Navigate */ = {
+			isa = PBXGroup;
+			children = (
+				FB5D72F92B79FD4000BD1A69 /* View */,
+				FB5D72F82B79FD3900BD1A69 /* Controller */,
+			);
+			path = Navigate;
+			sourceTree = "<group>";
+		};
+		FB5D72F82B79FD3900BD1A69 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FB5D72F92B79FD4000BD1A69 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		FBB25F052B775F7E00C69FB2 = {
 			isa = PBXGroup;
 			children = (
@@ -56,15 +79,56 @@
 		FBB25F102B775F7E00C69FB2 /* Maps */ = {
 			isa = PBXGroup;
 			children = (
-				FBB25F112B775F7E00C69FB2 /* AppDelegate.swift */,
-				FBB25F132B775F7E00C69FB2 /* SceneDelegate.swift */,
-				FBB25F152B775F7E00C69FB2 /* ViewController.swift */,
-				FBB25F172B775F7E00C69FB2 /* Main.storyboard */,
-				FBB25F1A2B775F7F00C69FB2 /* Assets.xcassets */,
-				FBB25F1C2B775F7F00C69FB2 /* LaunchScreen.storyboard */,
-				FBB25F1F2B775F7F00C69FB2 /* Info.plist */,
+				FBB25F262B775FD100C69FB2 /* Home */,
+				FB5D72F72B79FD0F00BD1A69 /* Navigate */,
+				FBB25F292B77602A00C69FB2 /* Resources */,
+				FBB25F252B775FBD00C69FB2 /* App Delegates */,
 			);
 			path = Maps;
+			sourceTree = "<group>";
+		};
+		FBB25F252B775FBD00C69FB2 /* App Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				FBB25F132B775F7E00C69FB2 /* SceneDelegate.swift */,
+				FBB25F112B775F7E00C69FB2 /* AppDelegate.swift */,
+			);
+			path = "App Delegates";
+			sourceTree = "<group>";
+		};
+		FBB25F262B775FD100C69FB2 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				FBB25F282B77601800C69FB2 /* View */,
+				FBB25F272B77600100C69FB2 /* Controller */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		FBB25F272B77600100C69FB2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FBB25F152B775F7E00C69FB2 /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		FBB25F282B77601800C69FB2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FBB25F172B775F7E00C69FB2 /* Main.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FBB25F292B77602A00C69FB2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FBB25F1F2B775F7F00C69FB2 /* Info.plist */,
+				FBB25F1C2B775F7F00C69FB2 /* LaunchScreen.storyboard */,
+				FBB25F1A2B775F7F00C69FB2 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,7 +357,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Maps/Info.plist;
+				INFOPLIST_FILE = Maps/Resources/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To Fetch user's location and show on map";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -320,7 +385,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Maps/Info.plist;
+				INFOPLIST_FILE = Maps/Resources/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To Fetch user's location and show on map";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

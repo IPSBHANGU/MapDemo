@@ -29,6 +29,7 @@ class MapViewController: UIViewController {
     // empty array to store current locations
     var currentLocations: [CLLocation] = []
     var mapOverlay:MKOverlay?
+    let currentLocationAnnotation = MKPointAnnotation()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +39,6 @@ class MapViewController: UIViewController {
         goButton.layer.borderWidth = 1
         mapView.delegate = self
         mapView.mapType = .standard
-        mapView.showsUserLocation = true
         switchButton.isOn = false
         segmentController.addTarget(self, action: #selector(segmentValueChanged(sender: )), for: .valueChanged)
         
@@ -221,11 +221,6 @@ extension MapViewController : CLLocationManagerDelegate {
         
         // call Function as soon as location array is updated
         self.drawRouteForLocation()
-        
-//        let coordinates = locations.map { $0.coordinate }
-//        let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
-//        
-//        mapView.addOverlay(polyline)
     }
 }
 
@@ -247,10 +242,29 @@ extension MapViewController : MKMapViewDelegate{
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "annotation")
-        annotationView.markerTintColor = .systemBlue
+        let identifier = "MyPin"
+        
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+            if annotation.title == "Start Location" {
+                annotationView?.image = UIImage(named: "location.png")
+            } else if annotation.title == "Current Location" {
+                annotationView?.image = UIImage(named: "user.png")
+            }
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
         return annotationView
     }
+
 
     func drawRoute(from startCoordinate: CLLocationCoordinate2D, to endCoordinate: CLLocationCoordinate2D) {
         let request = MKDirections.Request()
@@ -271,6 +285,43 @@ extension MapViewController : MKMapViewDelegate{
     
     // similar func to draw a route based on updating location
     func drawRouteForLocation() {
+        
+        if let latestLocation = currentLocations.last {
+            if latestLocation != nil {
+                
+                // hack
+                // Array to store annotations to remove
+                var annotationsToRemove: [MKPointAnnotation] = []
+
+                // Iterate through all annotations on the mapView
+                for annotation in mapView.annotations {
+                    if let pointAnnotation = annotation as? MKPointAnnotation {
+                        // Check your identification criteria here
+                        if pointAnnotation.title == "Current Location" {
+                            annotationsToRemove.append(pointAnnotation)
+                        }
+                        // Add more checks for other identification methods
+                    }
+                }
+
+                // Remove the identified annotations
+                mapView.removeAnnotations(annotationsToRemove)
+
+                
+                if let location = locationManager.location {
+                    currentLocationAnnotation.title = "Current Location"
+                    currentLocationAnnotation.coordinate = location.coordinate
+                    self.mapView.addAnnotation(currentLocationAnnotation)
+                }
+            }
+        }
+        
+        if currentLocations.count == 1 {
+            if let location = locationManager.location{
+                setAnnotation(location: location , title: "Start Location")
+            }
+        }
+        
       if currentLocations.count > 1 {
         let coordinates = currentLocations.map { $0.coordinate }
         mapOverlay = MKPolyline(coordinates: coordinates, count: coordinates.count)

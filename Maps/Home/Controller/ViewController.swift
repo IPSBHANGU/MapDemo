@@ -6,11 +6,13 @@
 //
 
 import UIKit
-import CoreLocation
 import MapKit
 
 class ViewController: UIViewController {
 
+    // Call Model
+    var mapsModelObject = MapsModel()
+    
     // map View
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var addressTextField: UITextField!
@@ -20,10 +22,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var locationDetailView: UIView!
     @IBOutlet weak var distanceETALable: UILabel!
     @IBOutlet weak var startNavigationButton: UIButton!
+    @IBOutlet weak var cancleButton: UIButton!
     
     let locationManager = CLLocationManager()
     var fromLocationCoordinate: CLLocationCoordinate2D?
     var toLocationCoordinate: CLLocationCoordinate2D?
+    
+    // Suggestions
+    var suggestionsView = UIView()
+    var suggestionsTableView = UITableView()
+    var searchCompleter = MKLocalSearchCompleter()
+    var searchResults = [MKLocalSearchCompletion]()
+    var searchResult: [MKMapItem] = []
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +44,10 @@ class ViewController: UIViewController {
         textFieldSet()
         setupStartButton()
         setupLocationDetails()
+        
+        // TO-Do add to func
+        suggestionsView.alpha = 0
+        suggestionsTableView.alpha = 0
     }
 
     func setLocationManager(){
@@ -77,135 +92,72 @@ class ViewController: UIViewController {
         startNavigationButton.layer.cornerRadius = 20
     }
     
+    func setupSuggestionsSearch(){
+        searchCompleter.delegate = self
+    }
+    
     func setAnnotation(location:CLLocation , title : String){
-        
         let annotation = MKPointAnnotation()
         annotation.title = title
         annotation.coordinate = location.coordinate
-        
         self.mapView.addAnnotation(annotation)
-        
         let view = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 200, longitudinalMeters: 200)
         self.mapView.setRegion(view, animated: true)
     }
     
-    func getLocation(address:String , isFormAddress : Bool){
-        let geoCoder = CLGeocoder()
-        geoCoder.geocodeAddressString(address) { [weak self] placemarks, error in
-            guard let self = self else { return }
-            if let error = error {
-                print("Geocode failed with error: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let placemarks = placemarks,
-                  let location = placemarks.first?.location else {
-                print("No location found for the given address")
-                return
-            }
-            
-            print("Location found: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-            
-            if isFormAddress {
-                self.fromLocationCoordinate = location.coordinate
-                print(fromLocationCoordinate)
-            } else {
-                self.toLocationCoordinate = location.coordinate
-                print(toLocationCoordinate)
-            }
-            
-            if let fromCoordinate = self.fromLocationCoordinate,
-               let toCoordinate = self.toLocationCoordinate {
-                self.drawRoute(from: fromCoordinate, to: toCoordinate)
-                self.setAnnotation(location: CLLocation(latitude: fromCoordinate.latitude, longitude: fromCoordinate.longitude), title: addressTextField.text ?? "")
-            
-                self.setAnnotation(location: CLLocation(latitude: toCoordinate.latitude, longitude: toCoordinate.longitude), title: toTextField.text ?? "")
-                
-                print ("from \(fromLocationCoordinate!)")
-                print ("to \(toLocationCoordinate!)")
-            }
-        }
-    }
-    
-    func calculateDistance(from sourceCoordinate: CLLocationCoordinate2D, to destinationCoordinate: CLLocationCoordinate2D) -> String {
-            let sourceLocation = CLLocation(latitude: sourceCoordinate.latitude, longitude: sourceCoordinate.longitude)
-            let destinationLocation = CLLocation(latitude: destinationCoordinate.latitude, longitude: destinationCoordinate.longitude)
-            
-        let distanceInKilometers = sourceLocation.distance(from: destinationLocation) / 1000.0
-        let formattedDistance = String(format: "%.2f km", distanceInKilometers)
-            return formattedDistance
-        }
-    
-    func getEstimatedTimeOfArrival(sourceCoordinate: CLLocationCoordinate2D, destinationCoordinate: CLLocationCoordinate2D, completion: @escaping (Int?, Error?) -> Void) {
-        let sourcePlacemark = MKPlacemark(coordinate: sourceCoordinate)
-        let destinationPlacemark = MKPlacemark(coordinate: destinationCoordinate)
-        
-        let sourceItem = MKMapItem(placemark: sourcePlacemark)
-        let destinationItem = MKMapItem(placemark: destinationPlacemark)
-        
-        let request = MKDirections.Request()
-        request.source = sourceItem
-        request.destination = destinationItem
-        request.transportType = .automobile
-        request.requestsAlternateRoutes = false
-        request.departureDate = Date()
-        
-        let directions = MKDirections(request: request)
-        
-        directions.calculate { response, error in
-            if let error = error {
-                completion(nil, error)
-                return
-            }
-            
-            guard let route = response?.routes.first else {
-                let error = NSError(domain: "Maps", code: 0, userInfo: [NSLocalizedDescriptionKey: "No route found"])
-                completion(nil, error)
-                return
-            }
-            
-            let etaInSeconds = route.expectedTravelTime
-            let etaInMinutes = Int(etaInSeconds / 60)
-            
-            completion(etaInMinutes, nil)
-        }
-    }
-    
     func setETA() {
-        let distance = calculateDistance(from: fromLocationCoordinate!, to: toLocationCoordinate!)
-        
-        getEstimatedTimeOfArrival(sourceCoordinate: fromLocationCoordinate!, destinationCoordinate: toLocationCoordinate!) { etaInMinutes, error in
-            if let etaInMinutes = etaInMinutes {
-                self.distanceETALable.text = "\(etaInMinutes) minutes( \(distance))"
+        let distance = mapsModelObject.getDistance(from: fromLocationCoordinate!, to: toLocationCoordinate!)
+        mapsModelObject.getEstimatedTimeOfArrival(sourceCoordinate: fromLocationCoordinate!, destinationCoordinate: toLocationCoordinate!) { eta, error,unit  in
+            if let eta = eta {
+                self.distanceETALable.text = "\(eta) \(unit!) ( \(distance))"
             } else if let error = error {
                 self.distanceETALable.text = "Error calculating ETA: \(error.localizedDescription) (\(distance))"
             }
         }
     }
     
-    @IBAction func startButtonAction(_ sender: Any) {
-        Task { @MainActor in
-            if let fromAddress = addressTextField.text{
-                print("From cooordinates")
-                getLocation(address: fromAddress , isFormAddress: true)
+    func showNavigation(){
+        if let fromCoordinate = self.fromLocationCoordinate {
+            if let toCoordinate = self.toLocationCoordinate {
+                self.drawRoute(from: fromCoordinate, to: toCoordinate)
+                self.setAnnotation(location: CLLocation(latitude: fromCoordinate.latitude, longitude: fromCoordinate.longitude), title: self.addressTextField.text ?? "")
+            
+                self.setAnnotation(location: CLLocation(latitude: toCoordinate.latitude, longitude: toCoordinate.longitude), title: self.toTextField.text ?? "")
                 
+                print ("from \(self.fromLocationCoordinate!)")
+                print ("to \(toLocationCoordinate!)")
             }
-            
-            if let toAddress = toTextField.text  {
-                print("to coordinates")
-                self.getLocation(address: toAddress , isFormAddress: false)
+        }
+
+        // animate View When Start Button is triggered
+        UIView.animate(withDuration: 0.5, animations: {
+            self.locationDetailView.alpha = 1
+        })
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            self.addressTextField.alpha = 0
+            self.toTextField.alpha = 0
+            self.startButton.alpha = 0
+        })
+    }
+    
+    @IBAction func startButtonAction(_ sender: Any) {
+        // Start Location
+        mapsModelObject.getLocationFromAddress(address: addressTextField.text ?? "") { isSucceeded, placemarks, error in
+            if isSucceeded == true {
+                self.fromLocationCoordinate = placemarks
+                print(placemarks!)
+                // HACKKKK
+                self.mapsModelObject.getLocationFromAddress(address: self.toTextField.text ?? "") { isSucceeded, placemarks, error in
+                    if isSucceeded == true {
+                        self.toLocationCoordinate = placemarks
+                        print(placemarks!)
+                        self.showNavigation()
+                    }
+                }
+            } else {
+                self.alertUser(title: "Error While Searching Location", message: error ?? "")
             }
-            
-            // animate View When Start Button is triggered
-            UIView.animate(withDuration: 0.5, animations: {
-                self.locationDetailView.alpha = 1
-            })
-            
-            UIView.animate(withDuration: 0.5, animations: {
-                self.addressTextField.alpha = 0
-                self.toTextField.alpha = 0
-                self.startButton.alpha = 0
-            })
         }
     }
     
@@ -217,13 +169,111 @@ class ViewController: UIViewController {
             self.startButton.alpha = 1
             // hide View
             self.locationDetailView.alpha = 0
+            self.distanceETALable.text = "Loading ...!"
+            
         })
+    }
+    
+    func alertUser(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let okay = UIAlertAction(title: "Okay", style: .default)
+        
+        alert.addAction(okay)
+        self.present(alert, animated: true)
+        
+    }
+
+    func setupSuggestionsView(cgrect:CGRect){
+        suggestionsView.frame = cgrect
+        suggestionsTableView.frame = CGRectMake(0, 0, suggestionsView.frame.width, suggestionsView.frame.height)
+        suggestionsTableView.delegate = self
+        suggestionsTableView.dataSource = self
+        suggestionsTableView.register(UINib.init(nibName: "SuggestionTableViewCell", bundle: nil), forCellReuseIdentifier: "Suggestions")
+        suggestionsView.addSubview(suggestionsTableView)
+        // Animate View while adding
+        UIView.animate(withDuration: 0.5, animations: {
+            self.suggestionsView.alpha = 1
+            self.suggestionsTableView.alpha = 1
+
+        })
+        view.addSubview(suggestionsView)
+    }
+    
+    func performLocalSearch(query: String) {
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = query
+        let search = MKLocalSearch(request: searchRequest)
+        search.start { response, error in
+            guard let response = response else {
+                if let error = error {
+                    print("Local search error: \(error.localizedDescription)")
+                }
+                return
+            }
+            
+            // Handle search results
+            self.handleSearchResults(response.mapItems)
+        }
+    }
+    
+    func handleSearchResults(_ mapItems: [MKMapItem]) {
+        // Update the search results array
+        searchResult = mapItems
+        
+        // Reload the table view
+        DispatchQueue.main.async {
+            self.suggestionsTableView.reloadData()
+        }
     }
 }
 
 extension ViewController : UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        searchCompleter.queryFragment = textField.text!
+        let cgrect = CGRect(x: textField.frame.origin.x, y: textField.frame.origin.y + textField.frame.height, width: textField.frame.width, height: 200)
+        setupSuggestionsView(cgrect: cgrect)
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else { return true }
+        performLocalSearch(query: text)
+        return true
+    }
+    
+}
+
+extension ViewController: MKLocalSearchCompleterDelegate {
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        searchResults = completer.results
+        suggestionsTableView.reloadData()
+    }
+}
+
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return searchResult.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let mapItem = searchResult[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Suggestions", for: indexPath) as? SuggestionTableViewCell else { return UITableViewCell()}
+        
+        cell.setupCellView(title: mapItem.name!, detail: mapItem.placemark.title!)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // hide Suggestion View
+        UIView.animate(withDuration: 0.5, animations: {
+            self.suggestionsView.alpha = 0
+            self.suggestionsTableView.alpha = 0
+        })
     }
 }
 

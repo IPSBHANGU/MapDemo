@@ -31,10 +31,13 @@ class ViewController: UIViewController {
     // Suggestions
     var suggestionsView = UIView()
     var suggestionsTableView = UITableView()
+    var closeSuggestions = UIButton()
     var searchCompleter = MKLocalSearchCompleter()
     var searchResults = [MKLocalSearchCompletion]()
-    var searchResult: [MKMapItem] = []
-
+    var activeTextField:UITextField?
+    
+    // Current Location
+    var currentLocation = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,10 +47,9 @@ class ViewController: UIViewController {
         textFieldSet()
         setupStartButton()
         setupLocationDetails()
-        
-        // TO-Do add to func
-        suggestionsView.alpha = 0
-        suggestionsTableView.alpha = 0
+        setupSuggestionsView()
+        setupCurrentLocationButton()
+        searchCompleter.delegate = self
     }
 
     func setLocationManager(){
@@ -91,11 +93,7 @@ class ViewController: UIViewController {
         startNavigationButton.backgroundColor = UIColor(red: 0.5, green: 2.2, blue: 0.5, alpha: 2.0)
         startNavigationButton.layer.cornerRadius = 20
     }
-    
-    func setupSuggestionsSearch(){
-        searchCompleter.delegate = self
-    }
-    
+
     func setAnnotation(location:CLLocation , title : String){
         let annotation = MKPointAnnotation()
         annotation.title = title
@@ -120,6 +118,7 @@ class ViewController: UIViewController {
         if let fromCoordinate = self.fromLocationCoordinate {
             if let toCoordinate = self.toLocationCoordinate {
                 self.drawRoute(from: fromCoordinate, to: toCoordinate)
+                
                 self.setAnnotation(location: CLLocation(latitude: fromCoordinate.latitude, longitude: fromCoordinate.longitude), title: self.addressTextField.text ?? "")
             
                 self.setAnnotation(location: CLLocation(latitude: toCoordinate.latitude, longitude: toCoordinate.longitude), title: self.toTextField.text ?? "")
@@ -132,6 +131,7 @@ class ViewController: UIViewController {
         // animate View When Start Button is triggered
         UIView.animate(withDuration: 0.5, animations: {
             self.locationDetailView.alpha = 1
+            self.currentLocation.frame = CGRect(x: 348, y: 600, width: 50, height: 50)
         })
         
         UIView.animate(withDuration: 0.5, animations: {
@@ -141,23 +141,99 @@ class ViewController: UIViewController {
         })
     }
     
-    @IBAction func startButtonAction(_ sender: Any) {
-        // Start Location
-        mapsModelObject.getLocationFromAddress(address: addressTextField.text ?? "") { isSucceeded, placemarks, error in
-            if isSucceeded == true {
-                self.fromLocationCoordinate = placemarks
-                print(placemarks!)
-                // HACKKKK
-                self.mapsModelObject.getLocationFromAddress(address: self.toTextField.text ?? "") { isSucceeded, placemarks, error in
-                    if isSucceeded == true {
-                        self.toLocationCoordinate = placemarks
-                        print(placemarks!)
+    func setupCurrentLocationButton(){
+        currentLocation.alpha = 1
+        self.currentLocation.frame = CGRect(x: 348, y: 728, width: 50, height: 50)
+        currentLocation.layer.cornerRadius = 20
+        currentLocation.setImage(UIImage(systemName: "location.fill"), for: .normal)
+        currentLocation.addTarget(self, action: #selector(currentUserLocation(_:)), for: .touchUpInside)
+        self.view.addSubview(currentLocation)
+    }
+    
+    func useGeocoder(completion: @escaping (Result<Bool, Error>) -> Void) {
+        if fromLocationCoordinate == nil {
+            // Retrieve the coordinates for the destination address
+            mapsModelObject.getLocationFromAddress(address: self.addressTextField.text ?? "") { isSucceeded, placemarks, error in
+                if isSucceeded {
+                    if let placemark = placemarks {
+                        self.fromLocationCoordinate = placemark
+                        print(placemark)
                         self.showNavigation()
+                        completion(.success(true))
+                    } else {
+                        let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No coordinates found for destination"])
+                        completion(.failure(error))
                     }
+                } else {
+                    let error = error.map { $0 as! any Error as Error } ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])
+                    completion(.failure(error))
                 }
-            } else {
-                self.alertUser(title: "Error While Searching Location", message: error ?? "")
             }
+        } else if toLocationCoordinate == nil {
+            // Retrieve the coordinates for the destination address
+            mapsModelObject.getLocationFromAddress(address: self.toTextField.text ?? "") { isSucceeded, placemarks, error in
+                if isSucceeded {
+                    if let placemark = placemarks {
+                        self.toLocationCoordinate = placemark
+                        print(placemark)
+                        self.showNavigation()
+                        completion(.success(true))
+                    } else {
+                        let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No coordinates found for destination"])
+                        completion(.failure(error))
+                    }
+                } else {
+                    let error = error.map { $0 as! any Error as Error } ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])
+                    completion(.failure(error))
+                }
+            }
+        } else {
+            let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to perform search, Try again!"])
+            completion(.failure(error))
+        }
+    }
+
+
+    // reset Coordinates once they are used
+    func resetCoordinates() {
+        fromLocationCoordinate = nil
+        toLocationCoordinate = nil
+        print("Coordinates reset")
+    }
+    
+    @IBAction func startButtonAction(_ sender: Any) {
+        if fromLocationCoordinate == nil {
+            useGeocoder { result in
+                switch result {
+                case .success(let isSuccess):
+                    if isSuccess {
+                        print("Geocoding successful while fetching fromLocationCoordinate")
+                    } else {
+                        print("Geocoding failed while fetching fromLocationCoordinate")
+                    }
+                case .failure(let error):
+                    self.alertUser(title: "Error!", message: "Error which fetching coordinates from geocoder ERROR! \(error.localizedDescription)")
+                }
+            }
+        }
+
+        if toLocationCoordinate == nil {
+            useGeocoder { result in
+                switch result {
+                case .success(let isSuccess):
+                    if isSuccess {
+                        print("Geocoding successful while fetching toLocationCoordinate")
+                    } else {
+                        print("Geocoding failed while fetching toLocationCoordinate")
+                    }
+                case .failure(let error):
+                    self.alertUser(title: "Error!", message: "Error which fetching coordinates from geocoder ERROR! \(error.localizedDescription)")
+                }
+            }
+        }
+
+        if fromLocationCoordinate != nil && toLocationCoordinate != nil {
+            showNavigation()
         }
     }
     
@@ -170,8 +246,17 @@ class ViewController: UIViewController {
             // hide View
             self.locationDetailView.alpha = 0
             self.distanceETALable.text = "Loading ...!"
-            
+            self.currentLocation.frame = CGRect(x: 348, y: 728, width: 50, height: 50)
         })
+        resetMap()
+        resetCoordinates()
+    }
+    
+    @objc func currentUserLocation(_ sender: UIButton) {
+        if let userLocation = locationManager.location?.coordinate {
+            let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            mapView.setRegion(region, animated: true)
+        }
     }
     
     func alertUser(title: String, message: String) {
@@ -183,69 +268,58 @@ class ViewController: UIViewController {
         self.present(alert, animated: true)
         
     }
-
-    func setupSuggestionsView(cgrect:CGRect){
-        suggestionsView.frame = cgrect
-        suggestionsTableView.frame = CGRectMake(0, 0, suggestionsView.frame.width, suggestionsView.frame.height)
+    
+    func updateSuggestionFrame(rect:CGRect) {
+        suggestionsView.frame = rect
+        suggestionsTableView.rowHeight = UITableView.automaticDimension
+        suggestionsTableView.estimatedRowHeight = 30
+        suggestionsTableView.frame = CGRectMake(0, 0, suggestionsView.frame.width, suggestionsView.frame.height + 30)
+        closeSuggestions.frame = CGRect(x: suggestionsView.frame.origin.x, y: suggestionsView.frame.origin.y + 90, width: 90, height: 30)
+    }
+    
+    func setupSuggestionsView(){
+        suggestionsView.frame = CGRect.zero
+        suggestionsTableView.frame = CGRect.zero
+        closeSuggestions.frame = CGRect.zero
         suggestionsTableView.delegate = self
         suggestionsTableView.dataSource = self
         suggestionsTableView.register(UINib.init(nibName: "SuggestionTableViewCell", bundle: nil), forCellReuseIdentifier: "Suggestions")
+        closeSuggestions.setTitle("Close", for: .normal)
+        closeSuggestions.backgroundColor = UIColor.red
+        closeSuggestions.addTarget(self, action: #selector(closeSuggestionsView), for: .touchUpInside)
+        
+        // add round corners
+        suggestionsView.layer.cornerRadius = 9
+        suggestionsTableView.layer.cornerRadius = 9
+        closeSuggestions.layer.cornerRadius = 9
         suggestionsView.addSubview(suggestionsTableView)
-        // Animate View while adding
-        UIView.animate(withDuration: 0.5, animations: {
+        self.suggestionsView.alpha = 0
+        self.suggestionsTableView.alpha = 0
+        self.closeSuggestions.alpha = 0
+        view.addSubview(suggestionsView)
+        view.addSubview(closeSuggestions)
+    }
+    
+    func handleSearchResults() {
+        UIView.animate(withDuration: 0.3, animations: {
             self.suggestionsView.alpha = 1
             self.suggestionsTableView.alpha = 1
-
+            self.closeSuggestions.alpha = 1
         })
-        view.addSubview(suggestionsView)
-    }
-    
-    func performLocalSearch(query: String) {
-        let searchRequest = MKLocalSearch.Request()
-        searchRequest.naturalLanguageQuery = query
-        let search = MKLocalSearch(request: searchRequest)
-        search.start { response, error in
-            guard let response = response else {
-                if let error = error {
-                    print("Local search error: \(error.localizedDescription)")
-                }
-                return
-            }
-            
-            // Handle search results
-            self.handleSearchResults(response.mapItems)
-        }
-    }
-    
-    func handleSearchResults(_ mapItems: [MKMapItem]) {
-        // Update the search results array
-        searchResult = mapItems
-        
         // Reload the table view
         DispatchQueue.main.async {
             self.suggestionsTableView.reloadData()
         }
     }
-}
-
-extension ViewController : UITextFieldDelegate{
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-    }
     
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        searchCompleter.queryFragment = textField.text!
-        let cgrect = CGRect(x: textField.frame.origin.x, y: textField.frame.origin.y + textField.frame.height, width: textField.frame.width, height: 200)
-        setupSuggestionsView(cgrect: cgrect)
-        return true
+    @objc func closeSuggestionsView(){
+        // hide Suggestion View
+        UIView.animate(withDuration: 0.5, animations: {
+            self.suggestionsView.alpha = 0
+            self.suggestionsTableView.alpha = 0
+            self.closeSuggestions.alpha = 0
+        })
     }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else { return true }
-        performLocalSearch(query: text)
-        return true
-    }
-    
 }
 
 extension ViewController: MKLocalSearchCompleterDelegate {
@@ -255,25 +329,65 @@ extension ViewController: MKLocalSearchCompleterDelegate {
     }
 }
 
+extension ViewController : UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        activeTextField = textField
+        let cgrect = CGRect(x: textField.frame.origin.x, y: textField.frame.origin.y + textField.frame.height, width: textField.frame.width, height: textField.frame.height + 20)
+        updateSuggestionFrame(rect: cgrect)
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else { return true }
+        searchCompleter.queryFragment = text
+        self.handleSearchResults()
+        return true
+    }
+}
+
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResult.count
+        return searchResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let mapItem = searchResult[indexPath.row]
+        let searchResult = searchResults[indexPath.row]
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Suggestions", for: indexPath) as? SuggestionTableViewCell else { return UITableViewCell()}
         
-        cell.setupCellView(title: mapItem.name!, detail: mapItem.placemark.title!)
+        cell.setupCellView(title: searchResult.title)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let searchResult = searchResults[indexPath.row]
+        mapsModelObject.getLocalSearch(searchCompletion: searchResult) { activeMKLocalSearchCoordinate, error in
+            if error == nil {
+                if self.activeTextField == self.addressTextField {
+                    self.fromLocationCoordinate = activeMKLocalSearchCoordinate
+                } else if self.activeTextField == self.toTextField {
+                    self.toLocationCoordinate = activeMKLocalSearchCoordinate
+                }
+            }
+        }
+        
+        if activeTextField != nil {
+            activeTextField?.text = searchResult.title
+        }
+        
         // hide Suggestion View
         UIView.animate(withDuration: 0.5, animations: {
             self.suggestionsView.alpha = 0
             self.suggestionsTableView.alpha = 0
+            self.closeSuggestions.alpha = 0
         })
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 30
     }
 }
 
@@ -317,8 +431,30 @@ extension ViewController : MKMapViewDelegate{
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "annotation")
-        annotationView.markerTintColor = .systemBlue
+        let identifier = "MyPin"
+        
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+            if annotation.title == addressTextField.text ?? "" {
+                if addressTextField.text != "User Location" {
+                    annotationView?.image = UIImage(named: "user.png")
+                }
+            } else if annotation.title == toTextField.text ?? "" {
+                if toTextField.text != "User Location" {
+                    annotationView?.image = UIImage(named: "location.png")
+                }
+            }
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
         return annotationView
     }
     

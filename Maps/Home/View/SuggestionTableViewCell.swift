@@ -11,7 +11,6 @@ class SuggestionTableViewCell: UITableViewCell {
 
 
     @IBOutlet weak var titleLable: UILabel!
-    @IBOutlet weak var detailLable: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,8 +23,7 @@ class SuggestionTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setupCellView(title:String, detail:String){
+    func setupCellView(title:String){
         titleLable.text = title
-        detailLable.text = detail
     }
 }

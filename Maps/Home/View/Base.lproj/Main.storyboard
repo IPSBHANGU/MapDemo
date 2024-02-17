@@ -70,6 +70,9 @@
                                         <color key="tintColor" systemColor="labelColor"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Start"/>
+                                        <connections>
+                                            <segue destination="dYu-AV-5pG" kind="show" id="bIg-7c-SNJ"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -119,7 +122,41 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="76" y="-2"/>
+            <point key="canvasLocation" x="75.572519083969468" y="-2.1126760563380285"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="p0v-Vu-J41">
+            <objects>
+                <viewController id="dYu-AV-5pG" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="vZk-JG-5nW">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="GYk-wC-VpA">
+                                <rect key="frame" x="0.0" y="100" width="393" height="56"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="59" id="FWC-Ja-ABi"/>
+                                </constraints>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="dYu-AV-5pG" id="uci-uy-zud"/>
+                                </connections>
+                            </searchBar>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="JVL-u5-vNP"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="GYk-wC-VpA" firstAttribute="leading" secondItem="JVL-u5-vNP" secondAttribute="leading" id="18i-pi-gYt"/>
+                            <constraint firstItem="JVL-u5-vNP" firstAttribute="bottom" secondItem="GYk-wC-VpA" secondAttribute="bottom" constant="600" id="WOE-bA-Pvx"/>
+                            <constraint firstItem="GYk-wC-VpA" firstAttribute="centerX" secondItem="vZk-JG-5nW" secondAttribute="centerX" id="aBu-vc-2Xc"/>
+                            <constraint firstItem="GYk-wC-VpA" firstAttribute="top" secondItem="JVL-u5-vNP" secondAttribute="top" constant="100" id="t9D-Pp-3OH"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="2nc-ag-2xX"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eqq-dC-D2Z" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="848" y="-2"/>
         </scene>
     </scenes>
     <resources>

@@ -78,6 +78,20 @@ class MapsModel: NSObject {
         let distanceInKilometers = sourceLocation.distance(from: destinationLocation) / 1000.0
         let formattedDistance = String(format: "%.2f km", distanceInKilometers)
             return formattedDistance
-        }
+    }
     
+    func getLocalSearch(searchCompletion:MKLocalSearchCompletion ,completionHandler: @escaping (CLLocationCoordinate2D?, Error?) -> ()) {
+        let searchRequest = MKLocalSearch.Request(completion: searchCompletion)
+        let search = MKLocalSearch(request: searchRequest)
+        search.start { (response, error) in
+            if let error = error {
+                completionHandler(nil, error)
+                return
+            } else {
+                let coordinate = response!.mapItems[0].placemark.coordinate
+                completionHandler(coordinate, nil)
+            }
+        }
+    }
+
 }

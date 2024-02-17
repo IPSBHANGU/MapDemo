@@ -15,8 +15,8 @@ class ViewController: UIViewController {
     
     // map View
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var addressTextField: UITextField!
-    @IBOutlet weak var toTextField: UITextField!
+    @IBOutlet weak var addressSearchBar: UISearchBar!
+    @IBOutlet weak var toSearchBar: UISearchBar!
     @IBOutlet weak var startButton: UIButton!
     // Location Info View
     @IBOutlet weak var locationDetailView: UIView!
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
     var closeSuggestions = UIButton()
     var searchCompleter = MKLocalSearchCompleter()
     var searchResults = [MKLocalSearchCompletion]()
-    var activeTextField:UITextField?
+    var activeSearchBar:UISearchBar?
     
     // Current Location
     var currentLocation = UIButton()
@@ -44,7 +44,7 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
         setLocationManager()
         setMapView()
-        textFieldSet()
+        searchBarSet()
         setupStartButton()
         setupLocationDetails()
         setupSuggestionsView()
@@ -66,17 +66,9 @@ class ViewController: UIViewController {
         mapView.delegate = self
     }
     
-    func textFieldSet(){
-        addressTextField.delegate = self
-        toTextField.delegate = self
-        
-        // make textField round
-        addressTextField.layer.cornerRadius = 9
-        toTextField.layer.cornerRadius = 9
-        
-        // translucent textField
-        addressTextField.backgroundColor = UIColor(white: 1.1, alpha: 0.5)
-        toTextField.backgroundColor = UIColor(white: 1.1, alpha: 0.5)
+    func searchBarSet(){
+        addressSearchBar.delegate = self
+        toSearchBar.delegate = self
     }
     
     func setupStartButton(){
@@ -119,9 +111,9 @@ class ViewController: UIViewController {
             if let toCoordinate = self.toLocationCoordinate {
                 self.drawRoute(from: fromCoordinate, to: toCoordinate)
                 
-                self.setAnnotation(location: CLLocation(latitude: fromCoordinate.latitude, longitude: fromCoordinate.longitude), title: self.addressTextField.text ?? "")
+                self.setAnnotation(location: CLLocation(latitude: fromCoordinate.latitude, longitude: fromCoordinate.longitude), title: self.addressSearchBar.text ?? "")
             
-                self.setAnnotation(location: CLLocation(latitude: toCoordinate.latitude, longitude: toCoordinate.longitude), title: self.toTextField.text ?? "")
+                self.setAnnotation(location: CLLocation(latitude: toCoordinate.latitude, longitude: toCoordinate.longitude), title: self.toSearchBar.text ?? "")
                 
                 print ("from \(self.fromLocationCoordinate!)")
                 print ("to \(toLocationCoordinate!)")
@@ -135,8 +127,8 @@ class ViewController: UIViewController {
         })
         
         UIView.animate(withDuration: 0.5, animations: {
-            self.addressTextField.alpha = 0
-            self.toTextField.alpha = 0
+            self.addressSearchBar.alpha = 0
+            self.toSearchBar.alpha = 0
             self.startButton.alpha = 0
         })
     }
@@ -153,7 +145,7 @@ class ViewController: UIViewController {
     func useGeocoder(completion: @escaping (Result<Bool, Error>) -> Void) {
         if fromLocationCoordinate == nil {
             // Retrieve the coordinates for the destination address
-            mapsModelObject.getLocationFromAddress(address: self.addressTextField.text ?? "") { isSucceeded, placemarks, error in
+            mapsModelObject.getLocationFromAddress(address: self.addressSearchBar.text ?? "") { isSucceeded, placemarks, error in
                 if isSucceeded {
                     if let placemark = placemarks {
                         self.fromLocationCoordinate = placemark
@@ -171,7 +163,7 @@ class ViewController: UIViewController {
             }
         } else if toLocationCoordinate == nil {
             // Retrieve the coordinates for the destination address
-            mapsModelObject.getLocationFromAddress(address: self.toTextField.text ?? "") { isSucceeded, placemarks, error in
+            mapsModelObject.getLocationFromAddress(address: self.toSearchBar.text ?? "") { isSucceeded, placemarks, error in
                 if isSucceeded {
                     if let placemark = placemarks {
                         self.toLocationCoordinate = placemark
@@ -240,8 +232,8 @@ class ViewController: UIViewController {
     @IBAction func closeButtonAction(_ sender: UIButton) {
         // Bring back Text Fields and Start Button
         UIView.animate(withDuration: 0.5, animations: {
-            self.addressTextField.alpha = 1
-            self.toTextField.alpha = 1
+            self.addressSearchBar.alpha = 1
+            self.toSearchBar.alpha = 1
             self.startButton.alpha = 1
             // hide View
             self.locationDetailView.alpha = 0
@@ -329,22 +321,21 @@ extension ViewController: MKLocalSearchCompleterDelegate {
     }
 }
 
-extension ViewController : UITextFieldDelegate{
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+extension ViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
-    
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        activeTextField = textField
-        let cgrect = CGRect(x: textField.frame.origin.x, y: textField.frame.origin.y + textField.frame.height, width: textField.frame.width, height: textField.frame.height + 20)
-        updateSuggestionFrame(rect: cgrect)
-        return true
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else { return true }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let text = searchBar.text else { return }
         searchCompleter.queryFragment = text
         self.handleSearchResults()
+    }
+
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        activeSearchBar = searchBar
+        let cgrect = CGRect(x: searchBar.frame.origin.x, y: searchBar.frame.origin.y + searchBar.frame.height, width: searchBar.frame.width, height: searchBar.frame.height + 20)
+        updateSuggestionFrame(rect: cgrect)
         return true
     }
 }
@@ -366,16 +357,16 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let searchResult = searchResults[indexPath.row]
         mapsModelObject.getLocalSearch(searchCompletion: searchResult) { activeMKLocalSearchCoordinate, error in
             if error == nil {
-                if self.activeTextField == self.addressTextField {
+                if self.activeSearchBar == self.addressSearchBar {
                     self.fromLocationCoordinate = activeMKLocalSearchCoordinate
-                } else if self.activeTextField == self.toTextField {
+                } else if self.activeSearchBar == self.toSearchBar {
                     self.toLocationCoordinate = activeMKLocalSearchCoordinate
                 }
             }
         }
         
-        if activeTextField != nil {
-            activeTextField?.text = searchResult.title
+        if activeSearchBar != nil {
+            activeSearchBar?.text = searchResult.title
         }
         
         // hide Suggestion View
@@ -442,12 +433,12 @@ extension ViewController : MKMapViewDelegate{
         if annotationView == nil {
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             annotationView?.canShowCallout = true
-            if annotation.title == addressTextField.text ?? "" {
-                if addressTextField.text != "User Location" {
+            if annotation.title == addressSearchBar.text ?? "" {
+                if addressSearchBar.text != "User Location" {
                     annotationView?.image = UIImage(named: "user.png")
                 }
-            } else if annotation.title == toTextField.text ?? "" {
-                if toTextField.text != "User Location" {
+            } else if annotation.title == toSearchBar.text ?? "" {
+                if toSearchBar.text != "User Location" {
                     annotationView?.image = UIImage(named: "location.png")
                 }
             }
@@ -480,8 +471,8 @@ extension ViewController : MKMapViewDelegate{
         mapView.removeAnnotations(mapView.annotations)
         mapView.removeOverlays(mapView.overlays)
         mapView.mapType = .standard
-        addressTextField.text = ""
-        toTextField.text = ""
+        addressSearchBar.text = ""
+        toSearchBar.text = ""
     }
 }
 

@@ -21,18 +21,8 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <standardMapConfiguration key="preferredConfiguration"/>
                             </mapView>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="From" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9jM-sD-RtH">
-                                <rect key="frame" x="24" y="99" width="346" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="To" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LyN-Ni-W50">
-                                <rect key="frame" x="24" y="163" width="346" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t32-Qw-zrc">
-                                <rect key="frame" x="119" y="227" width="155" height="35"/>
+                                <rect key="frame" x="119" y="261" width="155" height="35"/>
                                 <color key="tintColor" systemColor="secondaryLabelColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Start"/>
@@ -41,7 +31,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oSV-xH-7QV">
-                                <rect key="frame" x="0.0" y="663" width="393" height="189"/>
+                                <rect key="frame" x="0.0" y="677" width="393" height="175"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4M8-Jw-zbY">
                                         <rect key="frame" x="346" y="1" width="47" height="35"/>
@@ -66,7 +56,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cn0-2a-zut">
-                                        <rect key="frame" x="119" y="124" width="155" height="35"/>
+                                        <rect key="frame" x="119" y="110" width="155" height="35"/>
                                         <color key="tintColor" systemColor="labelColor"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Start"/>
@@ -86,38 +76,52 @@
                                     <constraint firstAttribute="trailing" secondItem="4M8-Jw-zbY" secondAttribute="trailing" id="rvW-IK-V1n"/>
                                 </constraints>
                             </view>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="5Kd-R4-TN4">
+                                <rect key="frame" x="1" y="99" width="391" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="JQo-4o-lp6"/>
+                                </connections>
+                            </searchBar>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Ul4-Ad-G3c">
+                                <rect key="frame" x="1" y="185" width="393" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="0Y6-un-egT"/>
+                                </connections>
+                            </searchBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="oSV-xH-7QV" secondAttribute="trailing" id="170-x2-SAz"/>
-                            <constraint firstItem="9jM-sD-RtH" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="40" id="8Lg-ib-LgV"/>
                             <constraint firstItem="gso-0r-CoD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Ag2-7W-P8e"/>
-                            <constraint firstItem="LyN-Ni-W50" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="24" id="C00-QH-53A"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="9jM-sD-RtH" secondAttribute="trailing" constant="23" id="DrY-GT-hvQ"/>
+                            <constraint firstItem="t32-Qw-zrc" firstAttribute="top" secondItem="Ul4-Ad-G3c" secondAttribute="bottom" constant="20" id="EIB-GL-xc4"/>
+                            <constraint firstItem="5Kd-R4-TN4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="1" id="Hwm-jt-mKX"/>
                             <constraint firstItem="gso-0r-CoD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="LvQ-3p-TGJ"/>
                             <constraint firstAttribute="bottom" secondItem="gso-0r-CoD" secondAttribute="bottom" id="R5a-Da-Vox"/>
-                            <constraint firstItem="oSV-xH-7QV" firstAttribute="top" secondItem="t32-Qw-zrc" secondAttribute="bottom" constant="401" id="Taa-2k-KFI"/>
-                            <constraint firstItem="LyN-Ni-W50" firstAttribute="top" secondItem="9jM-sD-RtH" secondAttribute="bottom" constant="30" id="WYI-pB-UyY"/>
+                            <constraint firstItem="oSV-xH-7QV" firstAttribute="top" secondItem="t32-Qw-zrc" secondAttribute="bottom" constant="381" id="Taa-2k-KFI"/>
+                            <constraint firstItem="Ul4-Ad-G3c" firstAttribute="top" secondItem="5Kd-R4-TN4" secondAttribute="bottom" constant="30" id="Y0Y-Ww-D7p"/>
                             <constraint firstItem="oSV-xH-7QV" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="YTW-FB-63r"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="LyN-Ni-W50" secondAttribute="trailing" constant="23" id="cMx-kk-r4Q"/>
-                            <constraint firstItem="t32-Qw-zrc" firstAttribute="top" secondItem="LyN-Ni-W50" secondAttribute="bottom" constant="30" id="ceZ-7s-dRW"/>
+                            <constraint firstItem="5Kd-R4-TN4" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="40" id="Yy2-hG-KAF"/>
+                            <constraint firstAttribute="trailing" secondItem="5Kd-R4-TN4" secondAttribute="trailing" constant="1" id="b46-Ld-wFm"/>
                             <constraint firstAttribute="bottom" secondItem="oSV-xH-7QV" secondAttribute="bottom" id="d8z-mZ-Evh"/>
                             <constraint firstItem="gso-0r-CoD" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="haN-zK-pGB"/>
-                            <constraint firstItem="9jM-sD-RtH" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="24" id="wHt-LD-rtc"/>
+                            <constraint firstItem="Ul4-Ad-G3c" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="1" id="nmA-a4-mo4"/>
+                            <constraint firstItem="Ul4-Ad-G3c" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="1" id="nyC-Tr-y35"/>
                             <constraint firstItem="t32-Qw-zrc" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="119" id="weA-yR-dTz"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="t32-Qw-zrc" secondAttribute="trailing" constant="119" id="yQY-Ng-fiy"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="addressTextField" destination="9jM-sD-RtH" id="eJu-js-nzI"/>
+                        <outlet property="addressSearchBar" destination="5Kd-R4-TN4" id="ml3-t9-RVS"/>
                         <outlet property="cancleButton" destination="4M8-Jw-zbY" id="7jr-x4-q6x"/>
                         <outlet property="distanceETALable" destination="7ni-mI-bvN" id="jwS-e8-wUh"/>
                         <outlet property="locationDetailView" destination="oSV-xH-7QV" id="yOX-bh-2ul"/>
                         <outlet property="mapView" destination="gso-0r-CoD" id="gFS-u3-cbu"/>
                         <outlet property="startButton" destination="t32-Qw-zrc" id="ke0-37-Zjk"/>
                         <outlet property="startNavigationButton" destination="Cn0-2a-zut" id="YTp-hs-a0x"/>
-                        <outlet property="toTextField" destination="LyN-Ni-W50" id="QfY-5f-hsJ"/>
+                        <outlet property="toSearchBar" destination="Ul4-Ad-G3c" id="jK6-2J-XyH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -165,13 +169,13 @@
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

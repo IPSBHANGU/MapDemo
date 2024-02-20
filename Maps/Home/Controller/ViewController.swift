@@ -39,6 +39,8 @@ class ViewController: UIViewController {
     // Current Location
     var currentLocation = UIButton()
     
+    var is_DEBUG:Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -115,8 +117,10 @@ class ViewController: UIViewController {
             
                 self.setAnnotation(location: CLLocation(latitude: toCoordinate.latitude, longitude: toCoordinate.longitude), title: self.toSearchBar.text ?? "")
                 
-                print ("from \(self.fromLocationCoordinate!)")
-                print ("to \(toLocationCoordinate!)")
+                if is_DEBUG {
+                    print ("from \(self.fromLocationCoordinate!)")
+                    print ("to \(toLocationCoordinate!)")
+                }
             }
         }
 
@@ -149,7 +153,9 @@ class ViewController: UIViewController {
                 if isSucceeded {
                     if let placemark = placemarks {
                         self.fromLocationCoordinate = placemark
-                        print(placemark)
+                        if self.is_DEBUG {
+                            print(placemark)
+                        }
                         self.showNavigation()
                         completion(.success(true))
                     } else {
@@ -167,7 +173,9 @@ class ViewController: UIViewController {
                 if isSucceeded {
                     if let placemark = placemarks {
                         self.toLocationCoordinate = placemark
-                        print(placemark)
+                        if self.is_DEBUG {
+                            print(placemark)
+                        }
                         self.showNavigation()
                         completion(.success(true))
                     } else {
@@ -190,7 +198,24 @@ class ViewController: UIViewController {
     func resetCoordinates() {
         fromLocationCoordinate = nil
         toLocationCoordinate = nil
-        print("Coordinates reset")
+        if is_DEBUG {
+            print("Coordinates reset")
+        }
+    }
+    
+    // save Coordinates
+    func saveCoordinates(){
+        // Save Coordinates
+        let fromResult = mapsModelObject.storeFromCoordinates(coordinates: fromLocationCoordinate!)
+        let destinationResult = mapsModelObject.storeDestinationCoordinates(coordinates: toLocationCoordinate!)
+        
+        if fromResult.0 == false {
+            alertUser(title: fromResult.1, message: fromResult.2)
+        }
+        
+        if destinationResult.0 == false {
+            alertUser(title: destinationResult.1, message: destinationResult.2)
+        }
     }
     
     @IBAction func startButtonAction(_ sender: Any) {
@@ -199,9 +224,13 @@ class ViewController: UIViewController {
                 switch result {
                 case .success(let isSuccess):
                     if isSuccess {
-                        print("Geocoding successful while fetching fromLocationCoordinate")
+                        if self.is_DEBUG {
+                            print("Geocoding successful while fetching fromLocationCoordinate")
+                        }
                     } else {
-                        print("Geocoding failed while fetching fromLocationCoordinate")
+                        if self.is_DEBUG {
+                            print("Geocoding failed while fetching fromLocationCoordinate")
+                        }
                     }
                 case .failure(let error):
                     self.alertUser(title: "Error!", message: "Error which fetching coordinates from geocoder ERROR! \(error.localizedDescription)")
@@ -214,9 +243,13 @@ class ViewController: UIViewController {
                 switch result {
                 case .success(let isSuccess):
                     if isSuccess {
-                        print("Geocoding successful while fetching toLocationCoordinate")
+                        if self.is_DEBUG {
+                            print("Geocoding successful while fetching toLocationCoordinate")
+                        }
                     } else {
-                        print("Geocoding failed while fetching toLocationCoordinate")
+                        if self.is_DEBUG {
+                            print("Geocoding failed while fetching toLocationCoordinate")
+                        }
                     }
                 case .failure(let error):
                     self.alertUser(title: "Error!", message: "Error which fetching coordinates from geocoder ERROR! \(error.localizedDescription)")
@@ -241,6 +274,7 @@ class ViewController: UIViewController {
             self.currentLocation.frame = CGRect(x: 348, y: 728, width: 50, height: 50)
         })
         resetMap()
+        saveCoordinates()
         resetCoordinates()
     }
     
@@ -311,6 +345,12 @@ class ViewController: UIViewController {
             self.suggestionsTableView.alpha = 0
             self.closeSuggestions.alpha = 0
         })
+    }
+    
+    
+    @IBAction func startNavigationAction(_ sender: UIButton) {
+        let coordinatesView = CoordinatesViewController()
+        navigationController?.pushViewController(coordinatesView, animated: true)
     }
 }
 
@@ -386,21 +426,31 @@ extension ViewController:CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            print("Access granted")
+            if is_DEBUG {
+                print("Access granted")
+            }
             locationManager.startUpdatingLocation()
         case .denied:
-            print("Access not allowed")
+            if is_DEBUG {
+                print("Access not allowed")
+            }
         case .notDetermined:
-            print("Access Not determined")
+            if is_DEBUG {
+                print("Access Not determined")
+            }
         case .restricted:
-            print("Limited access")
+            if is_DEBUG {
+                print("Limited access")
+            }
         default:
-            print("Default case")
+            if is_DEBUG {
+                print("Default case")
+            }
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.first else { return }
+        //guard let location = locations.first else { return }
         
         let coordinates = locations.map { $0.coordinate }
         let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
@@ -464,6 +514,9 @@ extension ViewController : MKMapViewDelegate{
             
             self.mapView.addOverlay(route.polyline)
             self.setETA()
+            
+            let rect = route.polyline.boundingMapRect
+            self.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
         })
     }
     

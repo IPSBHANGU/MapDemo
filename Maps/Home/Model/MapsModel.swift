@@ -10,7 +10,13 @@ import CoreLocation
 import MapKit
 
 class MapsModel: NSObject {
+    
+    // AppDelegate
+    let appDelegate = UIApplication.shared.delegate as? AppDelegate
 
+    // Call Database Class
+    let dataBase = DataBase.shared
+    
     // Get location matching to input string
     func getLocationFromAddress(address:String, completionHandler: @escaping(_ isSucceeded: Bool, _ placemarks: CLLocationCoordinate2D?, _ error: String?)->()) {
         let geoCoder = CLGeocoder()
@@ -91,6 +97,46 @@ class MapsModel: NSObject {
                 let coordinate = response!.mapItems[0].placemark.coordinate
                 completionHandler(coordinate, nil)
             }
+        }
+    }
+    
+    // save from Coordinates
+    func storeFromCoordinates(coordinates: CLLocationCoordinate2D) -> (Bool, String, String) {
+        guard let context = appDelegate?.persistentContainer.viewContext else {
+            return (false, "Error", "Unable to access managed object context")
+        }
+
+        let coordinateObject = FromCoordinates(context: context)
+        coordinateObject.latitude = String(coordinates.latitude)
+        coordinateObject.longitude = String(coordinates.longitude)
+
+        let response = dataBase.saveCoordinatesCommon(context: context)
+
+        switch response {
+        case .success(let success):
+            return (true, "", "")
+        case .failure(let error):
+            return (false, "Error", "Error while saving context: \(error.localizedDescription)")
+        }
+    }
+
+    // save destination Coordinates
+    func storeDestinationCoordinates(coordinates: CLLocationCoordinate2D) -> (Bool, String, String) {
+        guard let context = appDelegate?.persistentContainer.viewContext else {
+            return (false, "Error", "Unable to access managed object context")
+        }
+
+        let coordinateObject = DestinationCoordinates(context: context)
+        coordinateObject.latitude = String(coordinates.latitude)
+        coordinateObject.longitude = String(coordinates.longitude)
+
+        let response = dataBase.saveCoordinatesCommon(context: context)
+
+        switch response {
+        case .success(let success):
+            return (true, "", "")
+        case .failure(let error):
+            return (false, "Error", "Error while saving context: \(error.localizedDescription)")
         }
     }
 

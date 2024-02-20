@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="DestinationCoordinates" representedClassName="DestinationCoordinates" syncable="YES">
+        <attribute name="latitude" optional="YES" attributeType="String"/>
+        <attribute name="longitude" optional="YES" attributeType="String"/>
+        <relationship name="from" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FromCoordinates" inverseName="destination" inverseEntity="FromCoordinates"/>
+    </entity>
+    <entity name="FromCoordinates" representedClassName="FromCoordinates" syncable="YES">
+        <attribute name="latitude" optional="YES" attributeType="String"/>
+        <attribute name="longitude" optional="YES" attributeType="String"/>
+        <relationship name="destination" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DestinationCoordinates" inverseName="from" inverseEntity="DestinationCoordinates"/>
+    </entity>
+</model>

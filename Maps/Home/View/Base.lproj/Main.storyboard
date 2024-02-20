@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dtd-xS-CEh">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
@@ -22,7 +22,7 @@
                                 <standardMapConfiguration key="preferredConfiguration"/>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t32-Qw-zrc">
-                                <rect key="frame" x="119" y="261" width="155" height="35"/>
+                                <rect key="frame" x="119" y="305" width="155" height="35"/>
                                 <color key="tintColor" systemColor="secondaryLabelColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Start"/>
@@ -31,7 +31,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oSV-xH-7QV">
-                                <rect key="frame" x="0.0" y="677" width="393" height="175"/>
+                                <rect key="frame" x="0.0" y="721" width="393" height="131"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4M8-Jw-zbY">
                                         <rect key="frame" x="346" y="1" width="47" height="35"/>
@@ -56,12 +56,12 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cn0-2a-zut">
-                                        <rect key="frame" x="119" y="110" width="155" height="35"/>
+                                        <rect key="frame" x="119" y="66" width="155" height="35"/>
                                         <color key="tintColor" systemColor="labelColor"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Start"/>
                                         <connections>
-                                            <segue destination="dYu-AV-5pG" kind="show" id="bIg-7c-SNJ"/>
+                                            <action selector="startNavigationAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lVf-Xz-t2b"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -77,14 +77,14 @@
                                 </constraints>
                             </view>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="5Kd-R4-TN4">
-                                <rect key="frame" x="1" y="99" width="391" height="56"/>
+                                <rect key="frame" x="1" y="143" width="391" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="JQo-4o-lp6"/>
                                 </connections>
                             </searchBar>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Ul4-Ad-G3c">
-                                <rect key="frame" x="1" y="185" width="393" height="56"/>
+                                <rect key="frame" x="1" y="229" width="393" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="0Y6-un-egT"/>
@@ -113,6 +113,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="t32-Qw-zrc" secondAttribute="trailing" constant="119" id="yQY-Ng-fiy"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="Jp5-rE-o2a"/>
                     <connections>
                         <outlet property="addressSearchBar" destination="5Kd-R4-TN4" id="ml3-t9-RVS"/>
                         <outlet property="cancleButton" destination="4M8-Jw-zbY" id="7jr-x4-q6x"/>
@@ -126,41 +127,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75.572519083969468" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="1002.2900763358779" y="-2.1126760563380285"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="p0v-Vu-J41">
+        <!--Navigation Controller-->
+        <scene sceneID="ThU-18-GXw">
             <objects>
-                <viewController id="dYu-AV-5pG" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="vZk-JG-5nW">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="GYk-wC-VpA">
-                                <rect key="frame" x="0.0" y="100" width="393" height="56"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="59" id="FWC-Ja-ABi"/>
-                                </constraints>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="dYu-AV-5pG" id="uci-uy-zud"/>
-                                </connections>
-                            </searchBar>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="JVL-u5-vNP"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="GYk-wC-VpA" firstAttribute="leading" secondItem="JVL-u5-vNP" secondAttribute="leading" id="18i-pi-gYt"/>
-                            <constraint firstItem="JVL-u5-vNP" firstAttribute="bottom" secondItem="GYk-wC-VpA" secondAttribute="bottom" constant="600" id="WOE-bA-Pvx"/>
-                            <constraint firstItem="GYk-wC-VpA" firstAttribute="centerX" secondItem="vZk-JG-5nW" secondAttribute="centerX" id="aBu-vc-2Xc"/>
-                            <constraint firstItem="GYk-wC-VpA" firstAttribute="top" secondItem="JVL-u5-vNP" secondAttribute="top" constant="100" id="t9D-Pp-3OH"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="2nc-ag-2xX"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eqq-dC-D2Z" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dtd-xS-CEh" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="4pJ-sf-0I8">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="SX7-B2-xQK"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mKC-EQ-U3o" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="848" y="-2"/>
+            <point key="canvasLocation" x="75.572519083969468" y="-2.1126760563380285"/>
         </scene>
     </scenes>
     <resources>

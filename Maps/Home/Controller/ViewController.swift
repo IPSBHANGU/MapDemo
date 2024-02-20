@@ -349,6 +349,10 @@ class ViewController: UIViewController {
     
     
     @IBAction func startNavigationAction(_ sender: UIButton) {
+        // Save and reset Coordinates
+        saveCoordinates()
+        resetCoordinates()
+        
         let coordinatesView = CoordinatesViewController()
         navigationController?.pushViewController(coordinatesView, animated: true)
     }

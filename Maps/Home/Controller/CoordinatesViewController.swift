@@ -11,7 +11,10 @@ class CoordinatesViewController: UIViewController {
 
     // Call Database Class
     let dataBase = DataBase.shared
-    var destinationCoordinates: [DestinationCoordinates] = []
+
+    // empty array for Location Object
+    var location:[Location] = []
+    
     @IBOutlet weak var coordinatesTableView: UITableView!
     
     override func viewDidLoad() {
@@ -29,13 +32,13 @@ class CoordinatesViewController: UIViewController {
     }
     
     func fetchCoordinates(){
-        let fetchDestinationCoordinates = dataBase.fetchCoordinatesCommon(model: DestinationCoordinates.self)
+        let fetchDestinationCoordinates = dataBase.fetchCoordinatesCommon(model: Location.self)
         
         // handle result enum
         switch fetchDestinationCoordinates {
         case .success(let data):
             if let data = data {
-                destinationCoordinates = data
+                location = data
             }
         case .failure(let error):
             print("Error: \(error)")
@@ -47,15 +50,21 @@ class CoordinatesViewController: UIViewController {
 
 extension CoordinatesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        destinationCoordinates.count
+        return location.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Coordinates", for: indexPath) as? CoordinatesTableViewCell else { return UITableViewCell()}
         
-        cell.setupCellView(longitude: destinationCoordinates[indexPath.row].longitude ?? "", latitude: destinationCoordinates[indexPath.row].latitude ?? "")
+        let locationNames = location[indexPath.row].name
+        
+        cell.setupCellView(fromLocation: locationNames?.components(separatedBy: " ").first ?? "", toLocation: locationNames?.components(separatedBy: " ").last ?? "")
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let historyLocationView = HistoryLocationViewController()
+        historyLocationView.location = location[indexPath.row]
+        navigationController?.pushViewController(historyLocationView, animated: true)
+    }
 }

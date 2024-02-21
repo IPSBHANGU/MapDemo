@@ -8,15 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		FB64BD362B852BC8004CA33C /* DataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB64BD352B852BC8004CA33C /* DataBase.swift */; };
-		FB64BD3B2B852D60004CA33C /* FromCoordinates+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB64BD372B852D60004CA33C /* FromCoordinates+CoreDataClass.swift */; };
-		FB64BD3C2B852D60004CA33C /* FromCoordinates+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB64BD382B852D60004CA33C /* FromCoordinates+CoreDataProperties.swift */; };
-		FB64BD3D2B852D60004CA33C /* DestinationCoordinates+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB64BD392B852D60004CA33C /* DestinationCoordinates+CoreDataClass.swift */; };
-		FB64BD3E2B852D60004CA33C /* DestinationCoordinates+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB64BD3A2B852D60004CA33C /* DestinationCoordinates+CoreDataProperties.swift */; };
 		FB64BD412B8531B4004CA33C /* CoordinatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB64BD3F2B8531B4004CA33C /* CoordinatesViewController.swift */; };
 		FB64BD422B8531B4004CA33C /* CoordinatesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB64BD402B8531B4004CA33C /* CoordinatesViewController.xib */; };
 		FB64BD452B85323E004CA33C /* CoordinatesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB64BD432B85323E004CA33C /* CoordinatesTableViewCell.swift */; };
 		FB64BD462B85323E004CA33C /* CoordinatesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB64BD442B85323E004CA33C /* CoordinatesTableViewCell.xib */; };
 		FB7A70742B8522F5000731B9 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FB7A70722B8522F5000731B9 /* CoreData.xcdatamodeld */; };
+		FB884D162B85DFB200DE822F /* Location+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB884D142B85DFB200DE822F /* Location+CoreDataClass.swift */; };
+		FB884D172B85DFB200DE822F /* Location+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB884D152B85DFB200DE822F /* Location+CoreDataProperties.swift */; };
+		FB884D1E2B85FB1800DE822F /* HistoryLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB884D1C2B85FB1800DE822F /* HistoryLocationViewController.swift */; };
+		FB884D1F2B85FB1800DE822F /* HistoryLocationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB884D1D2B85FB1800DE822F /* HistoryLocationViewController.xib */; };
 		FBB25F122B775F7E00C69FB2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB25F112B775F7E00C69FB2 /* AppDelegate.swift */; };
 		FBB25F142B775F7E00C69FB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB25F132B775F7E00C69FB2 /* SceneDelegate.swift */; };
 		FBB25F162B775F7E00C69FB2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB25F152B775F7E00C69FB2 /* ViewController.swift */; };
@@ -30,15 +30,15 @@
 
 /* Begin PBXFileReference section */
 		FB64BD352B852BC8004CA33C /* DataBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBase.swift; sourceTree = "<group>"; };
-		FB64BD372B852D60004CA33C /* FromCoordinates+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FromCoordinates+CoreDataClass.swift"; sourceTree = "<group>"; };
-		FB64BD382B852D60004CA33C /* FromCoordinates+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FromCoordinates+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		FB64BD392B852D60004CA33C /* DestinationCoordinates+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DestinationCoordinates+CoreDataClass.swift"; sourceTree = "<group>"; };
-		FB64BD3A2B852D60004CA33C /* DestinationCoordinates+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DestinationCoordinates+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		FB64BD3F2B8531B4004CA33C /* CoordinatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatesViewController.swift; sourceTree = "<group>"; };
 		FB64BD402B8531B4004CA33C /* CoordinatesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoordinatesViewController.xib; sourceTree = "<group>"; };
 		FB64BD432B85323E004CA33C /* CoordinatesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatesTableViewCell.swift; sourceTree = "<group>"; };
 		FB64BD442B85323E004CA33C /* CoordinatesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoordinatesTableViewCell.xib; sourceTree = "<group>"; };
 		FB7A70732B8522F5000731B9 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
+		FB884D142B85DFB200DE822F /* Location+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+CoreDataClass.swift"; sourceTree = "<group>"; };
+		FB884D152B85DFB200DE822F /* Location+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		FB884D1C2B85FB1800DE822F /* HistoryLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryLocationViewController.swift; sourceTree = "<group>"; };
+		FB884D1D2B85FB1800DE822F /* HistoryLocationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HistoryLocationViewController.xib; sourceTree = "<group>"; };
 		FBB25F0E2B775F7E00C69FB2 /* Maps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maps.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBB25F112B775F7E00C69FB2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBB25F132B775F7E00C69FB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -74,6 +74,8 @@
 		FBB25F052B775F7E00C69FB2 = {
 			isa = PBXGroup;
 			children = (
+				FB884D142B85DFB200DE822F /* Location+CoreDataClass.swift */,
+				FB884D152B85DFB200DE822F /* Location+CoreDataProperties.swift */,
 				FB7A70752B8522FB000731B9 /* CoreData */,
 				FBB25F102B775F7E00C69FB2 /* Maps */,
 				FBB25F0F2B775F7E00C69FB2 /* Products */,
@@ -122,6 +124,7 @@
 			children = (
 				FBB25F152B775F7E00C69FB2 /* ViewController.swift */,
 				FB64BD3F2B8531B4004CA33C /* CoordinatesViewController.swift */,
+				FB884D1C2B85FB1800DE822F /* HistoryLocationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -135,6 +138,7 @@
 				FBF5F9AB2B7BA39E002CDC12 /* SuggestionTableViewCell.xib */,
 				FB64BD432B85323E004CA33C /* CoordinatesTableViewCell.swift */,
 				FB64BD442B85323E004CA33C /* CoordinatesTableViewCell.xib */,
+				FB884D1D2B85FB1800DE822F /* HistoryLocationViewController.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -153,10 +157,6 @@
 		FBF5F99C2B7B7548002CDC12 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				FB64BD372B852D60004CA33C /* FromCoordinates+CoreDataClass.swift */,
-				FB64BD382B852D60004CA33C /* FromCoordinates+CoreDataProperties.swift */,
-				FB64BD392B852D60004CA33C /* DestinationCoordinates+CoreDataClass.swift */,
-				FB64BD3A2B852D60004CA33C /* DestinationCoordinates+CoreDataProperties.swift */,
 				FBF5F99F2B7B75C6002CDC12 /* MapsModel.swift */,
 			);
 			path = Model;
@@ -220,6 +220,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB884D1F2B85FB1800DE822F /* HistoryLocationViewController.xib in Resources */,
 				FB64BD422B8531B4004CA33C /* CoordinatesViewController.xib in Resources */,
 				FBB25F1E2B775F7F00C69FB2 /* LaunchScreen.storyboard in Resources */,
 				FBB25F1B2B775F7F00C69FB2 /* Assets.xcassets in Resources */,
@@ -237,17 +238,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBF5F9A02B7B75C6002CDC12 /* MapsModel.swift in Sources */,
-				FB64BD3B2B852D60004CA33C /* FromCoordinates+CoreDataClass.swift in Sources */,
-				FB64BD3D2B852D60004CA33C /* DestinationCoordinates+CoreDataClass.swift in Sources */,
-				FB64BD3C2B852D60004CA33C /* FromCoordinates+CoreDataProperties.swift in Sources */,
+				FB884D1E2B85FB1800DE822F /* HistoryLocationViewController.swift in Sources */,
 				FB64BD412B8531B4004CA33C /* CoordinatesViewController.swift in Sources */,
+				FB884D172B85DFB200DE822F /* Location+CoreDataProperties.swift in Sources */,
 				FBB25F162B775F7E00C69FB2 /* ViewController.swift in Sources */,
 				FB7A70742B8522F5000731B9 /* CoreData.xcdatamodeld in Sources */,
 				FB64BD452B85323E004CA33C /* CoordinatesTableViewCell.swift in Sources */,
-				FB64BD3E2B852D60004CA33C /* DestinationCoordinates+CoreDataProperties.swift in Sources */,
 				FBF5F9AC2B7BA39E002CDC12 /* SuggestionTableViewCell.swift in Sources */,
 				FBB25F122B775F7E00C69FB2 /* AppDelegate.swift in Sources */,
 				FB64BD362B852BC8004CA33C /* DataBase.swift in Sources */,
+				FB884D162B85DFB200DE822F /* Location+CoreDataClass.swift in Sources */,
 				FBB25F142B775F7E00C69FB2 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

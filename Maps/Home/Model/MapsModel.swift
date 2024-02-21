@@ -101,39 +101,38 @@ class MapsModel: NSObject {
     }
     
     // save from Coordinates
-    func storeFromCoordinates(coordinates: CLLocationCoordinate2D) -> (Bool, String, String) {
+    func storeSearchHistory(fromLocationName:String, toLocationName:String, fromCoordinates: CLLocationCoordinate2D, toCoordinates:CLLocationCoordinate2D, route:MKPolyline) -> (Bool, String, String) {
         guard let context = appDelegate?.persistentContainer.viewContext else {
             return (false, "Error", "Unable to access managed object context")
         }
 
-        let coordinateObject = FromCoordinates(context: context)
-        coordinateObject.latitude = String(coordinates.latitude)
-        coordinateObject.longitude = String(coordinates.longitude)
+        let coordinateObject = Location(context: context)
+        
+        // Location Search Name
+        let separator = ", "
+        coordinateObject.name = [fromLocationName, toLocationName].joined(separator: separator)
+        
+        // Coordinates
+        coordinateObject.fromCoordinates = fromCoordinates.latitude + fromCoordinates.longitude
+        coordinateObject.toCoordinates = toCoordinates.latitude + toCoordinates.longitude
+        
+        // Route
+        do {
+            let pointsData = NSMutableData()
+            var count = route.pointCount
+            var points = route.points()
+            
+            pointsData.append(&count, length: MemoryLayout<UInt>.size)
+            pointsData.append(points, length: MemoryLayout<MKMapPoint>.size * count)
+            coordinateObject.path = Data(referencing: pointsData)
+        } catch {
+            return (false, "Error", "Error while encoding route data: \(error.localizedDescription)")
+        }
 
         let response = dataBase.saveCoordinatesCommon(context: context)
 
         switch response {
-        case .success(let success):
-            return (true, "", "")
-        case .failure(let error):
-            return (false, "Error", "Error while saving context: \(error.localizedDescription)")
-        }
-    }
-
-    // save destination Coordinates
-    func storeDestinationCoordinates(coordinates: CLLocationCoordinate2D) -> (Bool, String, String) {
-        guard let context = appDelegate?.persistentContainer.viewContext else {
-            return (false, "Error", "Unable to access managed object context")
-        }
-
-        let coordinateObject = DestinationCoordinates(context: context)
-        coordinateObject.latitude = String(coordinates.latitude)
-        coordinateObject.longitude = String(coordinates.longitude)
-
-        let response = dataBase.saveCoordinatesCommon(context: context)
-
-        switch response {
-        case .success(let success):
+        case .success(_):
             return (true, "", "")
         case .failure(let error):
             return (false, "Error", "Error while saving context: \(error.localizedDescription)")

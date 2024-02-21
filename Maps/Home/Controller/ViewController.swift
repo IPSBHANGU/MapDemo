@@ -206,16 +206,16 @@ class ViewController: UIViewController {
     // save Coordinates
     func saveCoordinates(){
         // Save Coordinates
-        let fromResult = mapsModelObject.storeFromCoordinates(coordinates: fromLocationCoordinate!)
-        let destinationResult = mapsModelObject.storeDestinationCoordinates(coordinates: toLocationCoordinate!)
-        
-        if fromResult.0 == false {
-            alertUser(title: fromResult.1, message: fromResult.2)
-        }
-        
-        if destinationResult.0 == false {
-            alertUser(title: destinationResult.1, message: destinationResult.2)
-        }
+//        let fromResult = mapsModelObject.storeFromCoordinates(coordinates: fromLocationCoordinate!)
+//        let destinationResult = mapsModelObject.storeDestinationCoordinates(coordinates: toLocationCoordinate!)
+//        
+//        if fromResult.0 == false {
+//            alertUser(title: fromResult.1, message: fromResult.2)
+//        }
+//        
+//        if destinationResult.0 == false {
+//            alertUser(title: destinationResult.1, message: destinationResult.2)
+//        }
     }
     
     @IBAction func startButtonAction(_ sender: Any) {
@@ -351,8 +351,7 @@ class ViewController: UIViewController {
     @IBAction func startNavigationAction(_ sender: UIButton) {
         // Save and reset Coordinates
         saveCoordinates()
-        resetCoordinates()
-        
+
         let coordinatesView = CoordinatesViewController()
         navigationController?.pushViewController(coordinatesView, animated: true)
     }
@@ -521,6 +520,17 @@ extension ViewController : MKMapViewDelegate{
             
             let rect = route.polyline.boundingMapRect
             self.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
+            
+            
+            // IDK which place is best alternative for this
+            // for time-being bare-with-me
+            let fromResult = self.mapsModelObject.storeSearchHistory(fromLocationName: self.addressSearchBar.text ?? "", toLocationName: self.toSearchBar.text ?? "", fromCoordinates: self.fromLocationCoordinate!, toCoordinates: self.toLocationCoordinate!, route: route.polyline)
+            
+            if fromResult.0 == true {
+                print("Search History Saved")
+            } else {
+                self.alertUser(title: fromResult.1, message: fromResult.2)
+            }
         })
     }
     

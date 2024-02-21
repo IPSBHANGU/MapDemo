@@ -10,9 +10,9 @@ import UIKit
 class CoordinatesTableViewCell: UITableViewCell {
 
     
-    @IBOutlet weak var longitudeLabel: UILabel!
-    @IBOutlet weak var latitudeLable: UILabel!
-    
+    // Location Names
+    @IBOutlet weak var fromLocationLable: UILabel!
+    @IBOutlet weak var toLocationLable: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -24,8 +24,8 @@ class CoordinatesTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setupCellView(longitude:String, latitude:String){
-        longitudeLabel.text = longitude
-        latitudeLable.text = latitude
+    func setupCellView(fromLocation:String, toLocation:String){
+        fromLocationLable.text = fromLocation
+        toLocationLable.text = toLocation
     }
 }
